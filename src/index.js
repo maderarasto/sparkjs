@@ -1,4 +1,5 @@
 import {Spark} from "@/spark";
+import App from "@/App";
 
 /**
  *
@@ -20,6 +21,6 @@ export function createApp(config) {
 createApp({
   mountEl: '#app',
   render() {
-    return <div>App</div>
+    return <App />
   }
 })

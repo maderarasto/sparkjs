@@ -1,6 +1,6 @@
-import Component from './component';
 import {buildVirtualTreeRoot} from "@/virtual-node";
-import {reconcile} from "@/reconciler";
+import {cleanNodes, reconcile, resolveEffectsFromNodes} from "@/reconciler";
+import {createElement, unmountNode, updateElement} from "@/dom";
 
 export class Spark {
   constructor() {
@@ -8,7 +8,7 @@ export class Spark {
     this._rootEl = null;
     /** @type {SparkJS.RenderCallback} */
     this._rootFunc = null;
-    /** @type {} */
+    /** @type {VirtualNode} */
     this._virtualTree = null;
   }
 
@@ -50,12 +50,33 @@ export class Spark {
     const newVirtualTree = buildVirtualTreeRoot(renderResult);
 
     reconcile(this._virtualTree, newVirtualTree);
-    console.log(newVirtualTree);
-    // TODO: resolve effects in both trees
-    // TODO: handle deletion effects
-    // TODO: store new virtual tree as current virtual tree
-    // TODO: handle placement and update effects
-    // TODO: clean all effects
+
+    const deletions = resolveEffectsFromNodes(this._virtualTree);
+    const newChanges = resolveEffectsFromNodes(newVirtualTree);
+
+    deletions.forEach((effect) => {
+      if (effect.type === 'Deletion') {
+        unmountNode(effect.nodeRef);
+      }
+    });
+
+    this._virtualTree = newVirtualTree;
+    this._virtualTree.elementRef = this._rootEl;
+
+    /** @type {VirtualNode[]} */
+    const mountedComponentNodes = [];
+    /** @type {VirtualNode[]} */
+    const updatedComponentNodes = [];
+    console.log(newChanges);
+    newChanges.forEach((effect) => {
+      if (effect.type === 'Placement') {
+        handlePlacement(effect, mountedComponentNodes);
+      } else if (effect.type === 'Update') {
+        handleUpdate(effect, updatedComponentNodes);
+      }
+    });
+
+    cleanNodes(this._virtualTree);
   }
 
   /**
@@ -65,4 +86,73 @@ export class Spark {
   onStateChanged(component) {
 
   }
+}
+
+/**
+ * Checks if component nodes are ready to trigger hooks for mounting or updating.
+ * Which hook to trigger depends on given action.
+ *
+ * @param {VirtualNode[]} componentNodes
+ * @param {'mount'|'update'}action
+ */
+function processComponentNodes(componentNodes, action = 'mount') {
+  if (!['mount', 'update'].includes(action)) {
+    action = 'mount';
+  }
+
+  while (componentNodes.length > 0) {
+    if (action === 'mount' && !componentNodes[0].allChildrenMounted()) {
+      break;
+    } else if (action === 'update' && !componentNodes[0].allChildrenUpdated()) {
+      break;
+    }
+
+    if (action === 'mount') {
+      componentNodes[0].mounted = true;
+      componentNodes[0].instance.mounted();
+    } else if (action === 'update') {
+      componentNodes[0].instance.updated();
+    }
+
+    componentNodes.shift();
+  }
+}
+
+/**
+ * Handles effect for placing a new HTML element or text node.
+ *
+ * @param {SparkJS.Effect} effect
+ * @param {VirtualNode[]} componentNodes
+ */
+function handlePlacement(effect, componentNodes) {
+  if (effect.nodeRef.isType('Component')) {
+    componentNodes.unshift(effect.nodeRef);
+  }
+
+  if (effect.nodeRef.isType('Element') || effect.nodeRef.isType('Text')) {
+    createElement(effect.nodeRef, effect.position);
+    // TODO: assign ref from element ref
+  }
+
+  processComponentNodes(componentNodes, 'mount');
+}
+
+/**
+ * Handles effect for updating existing HTML element.
+ *
+ * @param {SparkJS.Effect} effect
+ * @param {VirtualNode[]} componentNodes
+ */
+function handleUpdate(effect, componentNodes) {
+  effect.nodeRef.pendingUpdate = false;
+
+  if (effect.nodeRef.isType('Component')) {
+    componentNodes.unshift(effect.nodeRef);
+  }
+
+  if (effect.nodeRef.isType('Element')) {
+    updateElement(effect.nodeRef);
+  }
+
+  processComponentNodes(componentNodes, 'update');
 }

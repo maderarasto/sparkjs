@@ -10,7 +10,7 @@ module.exports = {
     extensions: ['.js', '.jsx'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@public': path.resolve(__dirname, 'public'),
+      '@public': path.resolve(__dirname, 'example'),
     }
   },
   plugins: [],

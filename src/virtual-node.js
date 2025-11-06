@@ -349,6 +349,47 @@ export function buildVirtualTree(renderResult, parent = null) {
 }
 
 /**
+ * Finds closest parent based on selector.
+ *
+ * @param {VirtualNode} node
+ * @param {string} selector
+ */
+export function findClosestNode(node, selector) {
+  if (!selector) {
+    throw new Error('A selector can\'t be empty string');
+  }
+
+  let currentNode = node;
+
+  while (currentNode?.parent) {
+    const parentProps = currentNode.parent.pendingProps ?? EmptyObject;
+
+    if (currentNode.parent.type !== 'element') {
+      currentNode = currentNode.parent;
+      continue;
+    }
+
+    if (selector.startsWith('#') && parentProps.id === selector.substring(1)) {
+      return  currentNode.parent;
+    } else if (selector.startsWith('.') && parentProps.class === selector.substring(1)) {
+      return currentNode.parent;
+    } else if (/[[a-zA-Z0-9\-_]*(?:="[a-zA-Z0-9\-_]*")?]/.test(selector)) {
+      const value = selector.replace('[', '').replace(']', '');
+
+      if (currentNode.parent.pendingProps[value]) {
+        return currentNode.parent;
+      }
+    } else if (currentNode.parent.tag === selector) {
+      return currentNode.parent;
+    }
+
+    currentNode = currentNode.parent;
+  }
+
+  return null;
+}
+
+/**
  * Build virtual tree from root node.
  *
  * @param {SparkJS.RenderResult} renderResult

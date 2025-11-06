@@ -1,5 +1,5 @@
 declare namespace SparkJS {
-  type Props = Record<string, unknown>
+  type Props = Record<string, any>
   type ComponentConstructor = new (props: Props) => import('./component').default
   type EventListener = EventListenerOrEventListenerObject
   type RenderResult = JSX | JSX[] | string
@@ -28,8 +28,23 @@ declare namespace SparkJS {
     ref: RefObject
   }>
 
+  type Effect = {
+    type: EffectType
+    parent: import('./virtual-node').default
+    nodeRef: import('./virtual-node').default
+    position: number
+    oldProps?: Props
+    newProps?: Props
+  }
+
   type RefObject = {
     current: any
+  }
+
+  type PropsDiff = {
+    type: 'Add' | 'Update' | 'Remove'
+    name: string
+    value?: any
   }
 
   type JSX = {

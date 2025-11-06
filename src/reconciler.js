@@ -226,3 +226,56 @@ export function reconcile(currentNode, newNode) {
     }
   });
 }
+
+/**
+ * Traverse through all virtual nodes in virtual tree and resolve effects that needs to be processed.
+ *
+ * @param {VirtualNode} node
+ * @param {number} position
+ * @returns {SparkJS.Effect[]}
+ */
+export function resolveEffectsFromNodes(node, position = 0) {
+  /** @type {SparkJS.Effect[]} */
+  let effects = [];
+
+  if (!node) {
+    return effects;
+  }
+
+  if (node.effect !== '') {
+    effects.push({
+      type: node.effect,
+      parent: node.parent,
+      nodeRef: node,
+      position,
+    });
+    node.effect = '';
+  }
+
+  node.children.forEach((child, index) => {
+    effects = [
+      ...effects,
+      ...resolveEffectsFromNodes(child, index),
+    ];
+  });
+
+  return effects;
+}
+
+/**
+ * Cleans all indicators and effects from virtual true.
+ *
+ * @param {VirtualNode} node
+ */
+export function cleanNodes(node) {
+  node.effect = '';
+  // TODO: clear indicator if state changed
+
+  if (!compareProps(node.oldProps, node.pendingProps)) {
+    node.oldProps = node.pendingProps;
+  }
+
+  node.children.forEach((child) => {
+    cleanNodes(child);
+  });
+}
