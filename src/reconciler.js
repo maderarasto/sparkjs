@@ -36,13 +36,15 @@ function mountVirtualSubtree(node) {
  */
 function copyNodeReferences(currentNode, newNode, recursive = false) {
   if (currentNode.tag === newNode.tag) {
-    newNode.oldProps = newNode.oldProps ?? EmptyObject;
-    newNode.elementRef = newNode.elementRef ?? null;
+    newNode.oldProps = currentNode.oldProps ?? EmptyObject;
+    newNode.elementRef = currentNode.elementRef ?? null;
 
     if (newNode.isType('Component')) {
       newNode.instance = currentNode.instance;
       newNode.instance.props = newNode.pendingProps ?? EmptyObject;
-      // TODO: copy state and indicator if state changed
+      newNode.state = currentNode.state;
+      newNode.stateChanged = currentNode.stateChanged;
+
     }
   }
 
@@ -217,7 +219,7 @@ export function reconcile(currentNode, newNode) {
     const matchingChild = findMatchingChildNode(currentNode, childNode, index);
 
     reconcile(matchingChild, childNode);
-    processedChildren.push(childNode);
+    processedChildren.push(matchingChild);
   });
 
   currentNode.children.forEach((childNode, index) => {
@@ -269,7 +271,7 @@ export function resolveEffectsFromNodes(node, position = 0) {
  */
 export function cleanNodes(node) {
   node.effect = '';
-  // TODO: clear indicator if state changed
+  node.stateChanged = false;
 
   if (!compareProps(node.oldProps, node.pendingProps)) {
     node.oldProps = node.pendingProps;

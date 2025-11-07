@@ -18,7 +18,7 @@ export default class Component {
    */
   setState(state) {
     this.state = state;
-    // TODO: call hook onStateChanged
+    $app.onStateChanged(this);
   }
 
   /**

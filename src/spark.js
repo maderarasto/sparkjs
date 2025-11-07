@@ -1,4 +1,4 @@
-import {buildVirtualTreeRoot} from "@/virtual-node";
+import {buildVirtualTreeRoot, findNodeByComponent} from "@/virtual-node";
 import {cleanNodes, reconcile, resolveEffectsFromNodes} from "@/reconciler";
 import {createElement, unmountNode, updateElement} from "@/dom";
 
@@ -84,7 +84,17 @@ export class Spark {
    * @param {Component} component
    */
   onStateChanged(component) {
+    const foundNode = findNodeByComponent(this._virtualTree, component);
 
+    if (!foundNode) {
+      console.warn('Skipping render. A render node not found for component: ' + component.constructor.name);
+      return;
+    }
+
+    // Request to re-render application.
+    foundNode.stateChanged = true;
+    foundNode.state = component.state;
+    this.render();
   }
 }
 

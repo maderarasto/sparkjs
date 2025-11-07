@@ -22,8 +22,8 @@ export default class VirtualNode {
     this.oldProps = EmptyObject;
     /** @type {SparkJS.Props} */
     this.pendingProps = props ?? EmptyObject;
-    // /** @type {Record<string, any>} */
-    // this.state = EmptyObject; TODO: add support for states
+    /** @type {Record<string, any>} */
+    this.state = EmptyObject;
     /** @type {Component|null} */
     this.instance = null;
     /** @type {HTMLElement|null} */
@@ -39,7 +39,7 @@ export default class VirtualNode {
     /** @type {boolean} */
     this.pendingUpdate = false;
     /** @type {boolean} */
-    // this.stateChanged = false; TODO: add support for states
+    this.stateChanged = false;
 
     // Node properties
     /** @type {VirtualNode|null} */
@@ -228,7 +228,7 @@ export default class VirtualNode {
     // Reference properties
     cloned.oldProps = this.oldProps;
     cloned.pendingProps = this.pendingProps;
-    // cloned.state = this.state; TODO: add support for states
+    cloned.state = this.state;
     cloned.instance = this.instance;
     cloned.elementRef = this.elementRef;
     cloned.listeners = this.listeners;
@@ -237,7 +237,7 @@ export default class VirtualNode {
     cloned.effect = this.effect;
     cloned.mounted = this.mounted;
     cloned.pendingUpdate = this.pendingUpdate;
-    // cloned.stateChanged = this.stateChanged; TODO: add support for states
+    cloned.stateChanged = this.stateChanged;
 
     // Node properties
     cloned.parent = this.parent;
@@ -259,7 +259,7 @@ export default class VirtualNode {
     // Reference properties
     this.oldProps = sourceNode.oldProps;
     this.pendingProps = sourceNode.pendingProps;
-    // this.state = sourceNode.state; TODO: add support for states
+    this.state = sourceNode.state;
     this.instance = sourceNode.instance;
     this.elementRef = sourceNode.elementRef;
     this.listeners = sourceNode.listeners;
@@ -268,7 +268,7 @@ export default class VirtualNode {
     this.effect = sourceNode.effect;
     this.mounted = sourceNode.mounted;
     this.pendingUpdate = sourceNode.pendingUpdate;
-    // this.stateChanged = sourceNode.stateChanged; TODO: add support for states
+    this.stateChanged = sourceNode.stateChanged;
 
     // Node properties
     this.parent = sourceNode.parent;
@@ -387,6 +387,27 @@ export function findClosestNode(node, selector) {
   }
 
   return null;
+}
+
+/**
+ * Finds a virtual node that is found by given component instance.
+ *
+ * @param {VirtualNode} node
+ * @param  {Component} component
+ * @returns {VirtualNode|null}
+ */
+export function findNodeByComponent(node, component) {
+  let foundNode = null;
+
+  if (node.instance === component) {
+    return node;
+  }
+
+  node.children.forEach((child) => {
+    foundNode = findNodeByComponent(child, component);
+  });
+
+  return foundNode;
 }
 
 /**
