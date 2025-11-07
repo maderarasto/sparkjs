@@ -1,5 +1,6 @@
 import {EmptyObject} from "@/utils";
 import htmlTags from "html-tags";
+import svgTags from "svg-tags";
 
 export default class VirtualNode {
   /**
@@ -315,7 +316,7 @@ export function buildVirtualTree(renderResult, parent = null) {
   if (typeof elementName === 'function') {
     node = new VirtualNode('Component', elementName, { children, ...attributes });
     children = [];
-  } else if ([...htmlTags].includes(elementName)) { // TODO: add support for SVG elements
+  } else if ([...htmlTags].includes(elementName) || [...svgTags].includes(elementName)) { // TODO: add support for SVG elements
     node = new VirtualNode('Element', elementName, attributes);
   } else if (typeof elementName === 'object') {
     throw new Error('Object cannot be rendered as JSX node!');
@@ -368,7 +369,7 @@ export function findClosestNode(node, selector) {
   while (currentNode?.parent) {
     const parentProps = currentNode.parent.pendingProps ?? EmptyObject;
 
-    if (currentNode.parent.type !== 'element') {
+    if (!currentNode.parent.isType('Element')) {
       currentNode = currentNode.parent;
       continue;
     }
