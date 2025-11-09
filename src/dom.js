@@ -1,5 +1,5 @@
-import {findClosestNode} from "@/virtual-node";
-import {diffProps, findClosestDOMNode, resolveClassName, resolveStyle} from "@/utils";
+import {findClosestNode} from "./virtual-node.js";
+import {diffProps, findClosestDOMNode, resolveClassName, resolveStyle} from "./utils.js";
 
 /**
  *
@@ -8,6 +8,10 @@ import {diffProps, findClosestDOMNode, resolveClassName, resolveStyle} from "@/u
  * @param {any} propValue
  */
 function handleAddingProps(node, propName, propValue) {
+  if (propName === 'className') {
+    propName = 'class';
+  }
+
   if (propName.startsWith('on')) {
     node.addEventListener(propName.substring(2).toLowerCase(), propValue);
     return;
@@ -39,6 +43,10 @@ function resolveElementAttributes(node) {
  * @param {any} propValue
  */
 function handleUpdatingProps(node, propName, propValue) {
+  if (propName === 'className') {
+    propName = 'class';
+  }
+
   if (propName.startsWith('on')) {
     const eventName = propName.substring(2).toLowerCase();
     node.removeEventListener(eventName, node.oldProps[eventName]);
@@ -61,6 +69,10 @@ function handleUpdatingProps(node, propName, propValue) {
  * @param {any} propValue
  */
 function handleRemovingProps(renderNode, propName, propValue) {
+  if (propName === 'className') {
+    propName = 'class';
+  }
+
   if (propName.startsWith('on')) {
     renderNode.removeEventListener(propName.substring(2).toLowerCase(), propValue);
   } else {

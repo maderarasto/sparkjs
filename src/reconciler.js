@@ -1,5 +1,5 @@
-import {EmptyObject, flattenRenderResultChildren} from "@/utils";
-import {buildVirtualTree} from "@/virtual-node";
+import {EmptyObject, flattenRenderResultChildren} from "./utils.js";
+import {buildVirtualTree} from "./virtual-node.js";
 
 /** @type {VirtualNode|null} */
 let lastMountedVirtualNode = null;
