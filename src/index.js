@@ -2,7 +2,7 @@ import {Spark} from "@/lib/spark";
 
 
 export {createRef} from './lib/spark';
-export Component from './lib/component';
+export { default } from './lib/component';
 
 /**
  *
