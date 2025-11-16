@@ -1,6 +1,6 @@
-import {Spark} from "./lib/spark";
+import {Emberon} from "./lib/emberon";
 
-export {createRef} from './lib/spark';
+export {createRef} from './lib/emberon';
 export { default } from './lib/component';
 
 /**
@@ -12,7 +12,7 @@ export function createApp(config) {
     throw new Error('Missing necessary options defined in given config.');
   }
 
-  window.$app = new Spark();
+  window.$app = new Emberon();
   window.$app.setRootFunction(config.render);
 
   document.addEventListener('DOMContentLoaded', () => {

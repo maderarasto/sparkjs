@@ -35,7 +35,7 @@ function processComponentNodes(componentNodes, action = 'mount') {
 /**
  * Handles effect for placing a new HTML element or text node.
  *
- * @param {SparkJS.Effect} effect
+ * @param {Emberon.Effect} effect
  * @param {VirtualNode[]} componentNodes
  */
 function handlePlacement(effect, componentNodes) {
@@ -74,11 +74,11 @@ function handleUpdate(effect, componentNodes) {
   processComponentNodes(componentNodes, 'update');
 }
 
-export class Spark {
+export class EmberonApp {
   constructor() {
     /** @type {HTMLElement} */
     this._rootEl = null;
-    /** @type {SparkJS.RenderCallback} */
+    /** @type {Emberon.RenderCallback} */
     this._rootFunc = null;
     /** @type {VirtualNode} */
     this._virtualTree = null;
@@ -87,7 +87,7 @@ export class Spark {
   /**
    * Sets a function that return JSX structure.
    *
-   * @param {() => SparkJS.RenderResult} rootFn
+   * @param {() => Emberon.RenderResult} rootFn
    */
   setRootFunction(rootFn) {
     this._rootFunc = rootFn;

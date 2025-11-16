@@ -4,7 +4,7 @@ export default class Component {
   /**
    * Initializes a component with props and empty state.
    *
-   * @param {SparkJS.Props} props
+   * @param {Emberon.Props} props
    */
   constructor(props) {
     this.props = props;
@@ -24,7 +24,7 @@ export default class Component {
   /**
    * Renders component as JSX structure.
    *
-   * @returns {SparkJS.RenderResult}
+   * @returns {Emberon.RenderResult}
    */
   render() {
     return null;

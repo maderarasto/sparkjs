@@ -63,8 +63,8 @@ function copyNodeReferences(currentNode, newNode, recursive = false) {
  * Checks if pending props are different from old props.
  * It's shallow comparison so object-like props are compared through reference.
  *
- * @param {SparkJS.Props} oldProps
- * @param {SparkJS.Props} pendingProps
+ * @param {Emberon.Props} oldProps
+ * @param {Emberon.Props} pendingProps
  */
 function compareProps(oldProps, pendingProps) {
   if (typeof oldProps !== 'object' || typeof pendingProps !== 'object') {

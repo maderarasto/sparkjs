@@ -1,4 +1,4 @@
-declare namespace SparkJS {
+declare namespace Emberon {
   type Props = Record<string, any>
   type ComponentConstructor = new (props: Props) => import('./component').default
   type EventListener = EventListenerOrEventListenerObject
@@ -30,8 +30,8 @@ declare namespace SparkJS {
 
   type Effect = {
     type: EffectType
-    parent: import('./virtual-node').default
-    nodeRef: import('./virtual-node').default
+    parent: import('./src/lib/virtual-node').default
+    nodeRef: import('./src/lib/virtual-node').default
     position: number
     oldProps?: Props
     newProps?: Props

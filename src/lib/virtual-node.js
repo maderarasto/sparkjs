@@ -6,9 +6,9 @@ export default class VirtualNode {
   /**
    * Initializes virtual node with type, tag and properties.
    *
-   * @param {SparkJS.NodeType} type
-   * @param {SparkJS.NodeTag} tag
-   * @param {SparkJS.NodeProps} props
+   * @param {Emberon.NodeType} type
+   * @param {Emberon.NodeTag} tag
+   * @param {Emberon.NodeProps} props
    */
   constructor(type, tag, props = {}) {
     const { key, ref, ...otherProps } = props;
@@ -19,25 +19,25 @@ export default class VirtualNode {
     this.tag = tag;
 
     // Reference properties
-    /** @type {SparkJS.Props} */
+    /** @type {Emberon.Props} */
     this.oldProps = EmptyObject;
-    /** @type {SparkJS.Props} */
+    /** @type {Emberon.Props} */
     this.pendingProps = otherProps ?? EmptyObject;
     /** @type {Record<string, any>} */
     this.state = EmptyObject;
-    /** @type {SparkJS.RefObject[]} */
+    /** @type {Emberon.RefObject[]} */
     this.refs = [];
-    /** @type {SparkJS.RefObject|null} */
+    /** @type {Emberon.RefObject|null} */
     this.ref = ref;
     /** @type {Component|null} */
     this.instance = null;
     /** @type {HTMLElement|null} */
     this.elementRef = null;
-    /** @type {Record<string, SparkJS.EventListener[]>} */
+    /** @type {Record<string, Emberon.EventListener[]>} */
     this.listeners = EmptyObject;
 
     // Indicator properties
-    /** @type {SparkJS.EffectType} */
+    /** @type {Emberon.EffectType} */
     this.effect = '';
     /** @type {boolean} */
     this.mounted = false;
@@ -56,7 +56,7 @@ export default class VirtualNode {
   /**
    * Checks if virtual node is of certain type.
    *
-   * @param {SparkJS.NodeType} type
+   * @param {Emberon.NodeType} type
    */
   isType(type) {
     return this.type === type;
@@ -115,7 +115,7 @@ export default class VirtualNode {
    * Removes an event listener from HTML element and from listeners of virtual node.
    *
    * @param {string} type
-   * @param {SparkJS.EventListener} listener
+   * @param {Emberon.EventListener} listener
    */
   removeEventListener(type, listener) {
     /** @type {EventListener[]} */
@@ -300,7 +300,7 @@ function checkKeysInJsxArray(jsxArray) {
 
 /**
  *
- * @param {SparkJS.RenderResult} renderResult
+ * @param {Emberon.RenderResult} renderResult
  * @param {VirtualNode|null} parent
  */
 export function buildVirtualTree(renderResult, parent = null) {
@@ -418,7 +418,7 @@ export function findNodeByComponent(node, component) {
 /**
  * Build virtual tree from root node.
  *
- * @param {SparkJS.RenderResult} renderResult
+ * @param {Emberon.RenderResult} renderResult
  */
 export function buildVirtualTreeRoot(renderResult) {
   const rootNode = new VirtualNode('Root', '');

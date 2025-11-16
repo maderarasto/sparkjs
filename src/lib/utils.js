@@ -3,8 +3,8 @@ export const EmptyObject = {};
 /**
  * Flatten children of render result if any of them is type of array.
  *
- * @param {SparkJS.RenderResult} renderResult
- * @returns {SparkJS.RenderResult}
+ * @param {Emberon.RenderResult} renderResult
+ * @returns {Emberon.RenderResult}
  */
 export function flattenRenderResultChildren(renderResult) {
   if (typeof renderResult === 'string') {
@@ -71,12 +71,12 @@ export function resolveStyle(value) {
 
 /**
  *
- * @param {SparkJS.Props} oldProps
- * @param {SparkJS.Props} pendingProps
- * @returns {SparkJS.PropsDiff[]}
+ * @param {Emberon.Props} oldProps
+ * @param {Emberon.Props} pendingProps
+ * @returns {Emberon.PropsDiff[]}
  */
 export function diffProps(oldProps, pendingProps) {
-  /** @type {SparkJS.PropsDiff[]} */
+  /** @type {Emberon.PropsDiff[]} */
   const propDiffs = [];
 
   for (const [key, value] of Object.entries(pendingProps)) {
