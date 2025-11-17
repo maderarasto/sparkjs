@@ -14,7 +14,8 @@
     "src",
     "scripts",
     "types.d.ts",
-    "package.json"
+    "package.json",
+    "readme.md"
   ],
   "dependencies": {
     "html-tags": "^5.1.0",
