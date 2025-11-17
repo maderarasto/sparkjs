@@ -1,18 +1,18 @@
-import {Emberon} from "./lib/emberon";
+import {EmberonApp} from "./lib/emberon";
 
 export {createRef} from './lib/emberon';
 export { default } from './lib/component';
 
 /**
  *
- * @param {SparkJS.AppConfig} config
+ * @param {Emberon.AppConfig} config
  */
 export function createApp(config) {
   if (typeof config !== "object") {
     throw new Error('Missing necessary options defined in given config.');
   }
 
-  window.$app = new Emberon();
+  window.$app = new EmberonApp();
   window.$app.setRootFunction(config.render);
 
   document.addEventListener('DOMContentLoaded', () => {
